@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dual-line print inspection · Yogeswaran Amsavalli</title>
+  <meta name="description" content="A .NET 8 sender and a WPF HMI over TCP/IP that inspect blister-foil print on two pharmaceutical lines in under 100 ms per frame.">
+  <link rel="icon" href="../assets/clayo/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#context">Skip to content</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="../index.html">yogi<span>@</span>budapest<span>:~/work/foil$</span></a>
+    <div class="nav-links">
+      <a href="#context">context</a>
+      <a href="#architecture">architecture</a>
+      <a href="#decisions">decisions</a>
+      <a href="#screens">screens</a>
+      <a href="#outcome">outcome</a>
+    </div>
+    <button class="theme-btn" aria-label="Toggle light and dark theme"><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</nav>
+
+<header class="cs-hero" id="top">
+  <div class="wrap">
+    <a class="crumb" href="../index.html#work">← cd ..</a>
+    <h1>Dual-line print inspection</h1>
+    <p class="tagline" style="font-size:20px;color:var(--muted);max-width:760px;margin:0 0 28px">
+      Two apps that check the print on every blister foil, on two pharmaceutical lines at once, in under 100 ms per frame.
+      I designed and built both, installed them on the factory floor and trained the operators.
+    </p>
+    <div class="facts">
+      <div class="fact"><div class="k">Role</div><div class="v">Software engineer · field application engineer</div></div>
+      <div class="fact"><div class="k">Company</div><div class="v">Machinify, Budapest</div></div>
+      <div class="fact"><div class="k">Year</div><div class="v">2025</div></div>
+      <div class="fact"><div class="k">Stack</div><div class="v">C# · .NET 8 · WinForms · WPF · TCP/IP</div></div>
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:0">
+  <div class="wrap reveal">
+    <div class="shot"><img src="../assets/industrial/foil-hmi-defect.webp" alt="The HMI marking a defect on a blister foil"></div>
+    <p class="caption">The operator HMI flags a defect on the foil. Camera feed redacted · client details removed.</p>
+  </div>
+</section>
+
+<section id="context">
+  <div class="wrap two" style="align-items:start">
+    <div class="reveal">
+      <p class="eyebrow">Context</p>
+      <h2>The problem</h2>
+      <p>On a pharmaceutical packaging line, the text printed on the blister foil (batch, expiry, product) must be readable on every single pack. A smudged or faded print is a compliance failure.</p>
+      <p>The plant ran two lines at the same time and needed every frame checked live, with operators who could trust the result and act on it.</p>
+      <p>I built two apps: a <b>Sender</b>, the high-speed engine next to the cameras, and an <b>HMI</b>, the operator's command centre.</p>
+    </div>
+    <div class="reveal">
+      <p class="eyebrow">Requirements</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>Need</th><th>Target</th></tr>
+        <tr><td>Speed</td><td>Capture, process and send each frame in under 100 ms</td></tr>
+        <tr><td>Two lines</td><td>Both lines on one I/O card, without interfering</td></tr>
+        <tr><td>Set-up</td><td>The HMI finds the Sender and connects with no configuration</td></tr>
+        <tr><td>No lost data</td><td>A defect image is never lost or left orphaned</td></tr>
+        <tr><td>Compliance</td><td>Login, role-based access and an audit trail of every action</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Architecture</p>
+      <h2>Sender and HMI over TCP/IP</h2>
+      <p class="lead">Hover or tap any box for a plain-English explanation.</p>
+    </div>
+    <div class="diagram-box reveal">
+      <div class="diagram-scroll">
+      <svg class="diagram" viewBox="0 0 900 300" role="img" aria-label="Architecture: cameras and I/O card feed the Sender, which streams results over TCP/IP to the HMI, which stores confirmed defects">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <path id="f1" class="edge" d="M160 82 H218" marker-end="url(#arr)"/>
+        <path id="f2" class="edge" d="M160 222 H190 V130 H218" marker-end="url(#arr)"/>
+        <path id="f3" class="edge" d="M440 130 H498" marker-end="url(#arr)"/>
+        <path id="f4" class="edge" d="M700 130 H738" marker-end="url(#arr)"/>
+        <path id="f5" class="edge" d="M600 162 V230 H442" marker-end="url(#arr)"/>
+        <text class="edge-label" x="166" y="74">frames</text>
+        <text class="edge-label" x="196" y="200">triggers</text>
+        <text class="edge-label" x="446" y="120">1 port / line</text>
+        <text class="edge-label" x="704" y="120">confirmed</text>
+        <text class="edge-label" x="460" y="250">session re-sync after a crash</text>
+        <circle class="flow" r="3.5"><animateMotion dur="1s" repeatCount="indefinite"><mpath href="#f1"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="1s" begin="0.3s" repeatCount="indefinite"><mpath href="#f3"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="1.4s" begin="0.6s" repeatCount="indefinite"><mpath href="#f4"/></animateMotion></circle>
+
+        <g class="node ext" tabindex="0" data-name="Cameras" data-info="One camera per line, looking at the printed foil as it moves.">
+          <rect x="20" y="50" width="140" height="64" rx="10"/><text x="90" y="78" text-anchor="middle">Cameras</text><text class="sub" x="90" y="96" text-anchor="middle">line 1 · line 2</text>
+        </g>
+        <g class="node ext" tabindex="0" data-name="I/O card" data-info="A single I/O card serves both lines: triggers in, signals out.">
+          <rect x="20" y="190" width="140" height="64" rx="10"/><text x="90" y="218" text-anchor="middle">I/O card</text><text class="sub" x="90" y="236" text-anchor="middle">shared by 2 lines</text>
+        </g>
+        <g class="node" tabindex="0" data-name="Sender" data-info="The high-speed engine (.NET 8, WinForms). Each line runs as its own class instance, multithreaded and async, with exception guards so a bad frame never takes the app down.">
+          <rect x="220" y="90" width="220" height="80" rx="10"/><text x="330" y="122" text-anchor="middle">Sender</text><text class="sub" x="330" y="140" text-anchor="middle">.NET 8 · 1 instance / line</text><text class="sub" x="330" y="156" text-anchor="middle">&lt;100 ms per frame</text>
+        </g>
+        <g class="node" tabindex="0" data-name="HMI" data-info="The operator's command centre. Finds the Sender by itself, shows Raw, Processed and Subtraction views, and has pre-, in- and post-production modes plus a training mode for new products. Rebuilt in WPF for v2 with login, roles and audit trails.">
+          <rect x="500" y="98" width="200" height="64" rx="10"/><text x="600" y="126" text-anchor="middle">HMI</text><text class="sub" x="600" y="144" text-anchor="middle">operator · WPF in v2</text>
+        </g>
+        <g class="node ext" tabindex="0" data-name="Network storage" data-info="Defect images are cached locally and only moved here after the operator confirms them, so nothing is lost or left orphaned.">
+          <rect x="740" y="98" width="140" height="64" rx="10"/><text x="810" y="126" text-anchor="middle">Storage</text><text class="sub" x="810" y="144" text-anchor="middle">confirmed defects</text>
+        </g>
+      </svg>
+      </div>
+      <div class="diagram-info"><b>tip</b>Hover or tap a box to see what it does and why it's there.</div>
+    </div>
+  </div>
+</section>
+
+<section id="decisions">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Key decisions</p>
+      <h2>The trade-offs that shaped it</h2>
+    </div>
+    <div class="adr">
+      <div class="adr-item reveal">
+        <h3><span class="n">ADR-01</span>One TCP port per line</h3>
+        <dl class="adr-grid">
+          <dt>Context</dt><dd>Two lines stream results at the same time, and two HMIs may watch them.</dd>
+          <dt>Decision</dt><dd>A dedicated port per line, so each stream is independent and two HMI clients can connect at once.</dd>
+          <dt>Trade-off</dt><dd>More ports to open on the plant network, but a slow line never delays the other.</dd>
+        </dl>
+      </div>
+      <div class="adr-item reveal">
+        <h3><span class="n">ADR-02</span>Confirm before storing</h3>
+        <dl class="adr-grid">
+          <dt>Context</dt><dd>Writing every defect image straight to network storage risked half-written files and images nobody had reviewed.</dd>
+          <dt>Decision</dt><dd>Cache locally and move an image only after the HMI confirms the defect.</dd>
+          <dt>Trade-off</dt><dd>Some local disk use; in exchange nothing is lost or orphaned.</dd>
+        </dl>
+      </div>
+      <div class="adr-item reveal">
+        <h3><span class="n">ADR-03</span>Recover instead of restarting</h3>
+        <dl class="adr-grid">
+          <dt>Context</dt><dd>On a running line, an operator cannot wait for both apps to be restarted in order.</dd>
+          <dt>Decision</dt><dd>The HMI reconnects by itself and re-syncs the session state with the Sender after any crash.</dd>
+          <dt>Trade-off</dt><dd>A small state-sync protocol to maintain; production keeps running.</dd>
+        </dl>
+      </div>
+      <div class="adr-item reveal">
+        <h3><span class="n">ADR-04</span>Security as part of v2, not an add-on</h3>
+        <dl class="adr-grid">
+          <dt>Context</dt><dd>Pharmaceutical compliance requires knowing who changed what, and when.</dd>
+          <dt>Decision</dt><dd>Rebuilt the HMI in WPF with a login, role-based access for operator, engineer and admin, and an audit trail of every action.</dd>
+          <dt>Trade-off</dt><dd>One more step for operators at the start of a shift; every change is now traceable.</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Screens</p>
+      <h2>What the operators use</h2>
+      <p class="lead">Camera feeds are blurred and client details removed on purpose.</p>
+    </div>
+    <div class="gallery reveal">
+      <figure><div class="shot"><img src="../assets/industrial/foil-sender.webp" alt="Sender app with raw, processed and subtraction views" loading="lazy"></div><figcaption class="caption">The Sender: raw frame, processed frame and the difference used to spot defects.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-hmi-production-hu.webp" alt="HMI during live production, Hungarian interface" loading="lazy"></div><figcaption class="caption">Live production in Hungarian, with passed and flagged counts per line.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-v2-login.webp" alt="v2 login screen" loading="lazy"></div><figcaption class="caption">v2: login and role-based access.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-v2-inspection.webp" alt="v2 WPF inspection screen" loading="lazy"></div><figcaption class="caption">v2: the inspection screen rebuilt in WPF.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="outcome">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Outcome</p>
+      <h2>Where it landed</h2>
+    </div>
+    <div class="stats reveal" style="margin-bottom:40px">
+      <div class="stat"><div class="num">&lt;100 ms</div><div class="label">capture, process and send per frame</div></div>
+      <div class="stat"><div class="num">2</div><div class="label">lines running on one I/O card</div></div>
+      <div class="stat"><div class="num">~496k</div><div class="label">blisters counted in two production screens alone</div></div>
+      <div class="stat"><div class="num">3</div><div class="label">roles with an audit trail in v2</div></div>
+    </div>
+    <ul class="role reveal">
+      <li><b>Designed</b>both apps from scratch: the Sender, the HMI and the TCP/IP protocol between them.</li>
+      <li><b>Led</b>the work from requirements to rollout: installed it on the production floor, tuned the set-ups and trained the operators.</li>
+      <li><b>Learned</b>that great engineering isn't complete until the people using it trust it.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="contact">
+  <div class="wrap reveal">
+    <a class="btn" href="../index.html#work">← Back to all work</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Yogeswaran Amsavalli</div>
+</footer>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>

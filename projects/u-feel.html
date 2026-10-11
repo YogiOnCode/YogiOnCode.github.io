@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U-FEEL: road data for EV range · Yogeswaran Amsavalli</title>
+  <meta name="description" content="A backend that turns HERE Maps data into drive-cycle files for truck energy simulation, comparing 11 path-length methods. Volvo Group and Chalmers, 2024.">
+  <link rel="icon" href="../assets/clayo/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#context">Skip to content</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="../index.html">yogi<span>@</span>gothenburg<span>:~/u-feel$</span></a>
+    <div class="nav-links">
+      <a href="#context">context</a>
+      <a href="#architecture">architecture</a>
+      <a href="#tradeoff">trade-off</a>
+      <a href="#outcome">outcome</a>
+    </div>
+    <button class="theme-btn" aria-label="Toggle light and dark theme"><svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</nav>
+
+<header class="cs-hero" id="top">
+  <div class="wrap">
+    <a class="crumb" href="../index.html#work">← cd ..</a>
+    <h1>U-FEEL: road data for EV range</h1>
+    <p class="tagline" style="font-size:20px;color:var(--muted);max-width:760px;margin:0 0 28px">
+      A backend that turns map data into drive-cycle files for truck energy simulation, and a comparison of 11 ways to
+      measure a route, accuracy against speed.
+    </p>
+    <div class="btns">
+      <a class="btn primary" href="https://research.chalmers.se/en/publication/541772">Read the report</a>
+      <a class="btn" href="https://github.com/YogiOnCode/DOC_model_road_data_tool">Code on GitHub</a>
+    </div>
+    <div class="facts">
+      <div class="fact"><div class="k">Role</div><div class="v">Engineering intern · master's thesis</div></div>
+      <div class="fact"><div class="k">Partners</div><div class="v">Volvo Group · Scania · Chalmers · RISE · VTI</div></div>
+      <div class="fact"><div class="k">Year</div><div class="v">01 – 06/2024, Gothenburg</div></div>
+      <div class="fact"><div class="k">Stack</div><div class="v">Python · HERE Maps API · REST</div></div>
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:0">
+  <div class="wrap reveal two">
+    <figure style="margin:0"><div class="shot"><img src="../assets/volvo/ufeel-poster.webp" alt="U-FEEL conference poster on path-length estimation from geospatial data"></div><figcaption class="caption">The poster I designed for the SVEA conference.</figcaption></figure>
+    <figure style="margin:0"><div class="shot"><img src="../assets/volvo/ufeel-seminar.webp" alt="Presenting the project objectives on stage" loading="lazy"></div><figcaption class="caption">Presenting the objectives.</figcaption></figure>
+  </div>
+</section>
+
+<section id="context">
+  <div class="wrap two" style="align-items:start">
+    <div class="reveal">
+      <p class="eyebrow">Context</p>
+      <h2>The problem</h2>
+      <p><b>U-FEEL</b> is a range-estimation project for Volvo's electric trucks and cars, run by Volvo Group with Scania, Chalmers, RISE and VTI.</p>
+      <p>A range simulation is only as good as its route. Straight-line GPS distance ignores slope, curvature and elevation, so a hilly route looks shorter and cheaper than it is.</p>
+      <p>My part was the road data: a backend that builds deterministic Operating Cycle (dOC) files the simulation can run on.</p>
+    </div>
+    <div class="reveal">
+      <p class="eyebrow">Requirements</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>Need</th><th>Why</th></tr>
+        <tr><td>Accurate</td><td>On flat and on hilly routes</td></tr>
+        <tr><td>Fast</td><td>Simulations run many routes</td></tr>
+        <tr><td>Robust</td><td>Real GPS traces are noisy</td></tr>
+        <tr><td>Reusable</td><td>Output the simulation can load directly</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Architecture</p>
+      <h2>From coordinates to a drive cycle</h2>
+      <p class="lead">Hover or tap any box for a plain-English explanation.</p>
+    </div>
+    <div class="diagram-box reveal">
+      <div class="diagram-scroll">
+      <svg class="diagram" viewBox="0 0 900 200" role="img" aria-label="Pipeline: route coordinates, HERE Maps API, Python backend, 11 estimation methods, dOC generator, simulation">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <path id="u1" class="edge" d="M130 100 H160" marker-end="url(#arr)"/>
+        <path id="u2" class="edge" d="M280 100 H310" marker-end="url(#arr)"/>
+        <path id="u3" class="edge" d="M440 100 H470" marker-end="url(#arr)"/>
+        <path id="u4" class="edge" d="M600 100 H630" marker-end="url(#arr)"/>
+        <path id="u5" class="edge" d="M750 100 H780" marker-end="url(#arr)"/>
+        <circle class="flow" r="3.5"><animateMotion dur="0.8s" repeatCount="indefinite"><mpath href="#u1"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="0.8s" begin="0.2s" repeatCount="indefinite"><mpath href="#u2"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="0.8s" begin="0.4s" repeatCount="indefinite"><mpath href="#u3"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="0.8s" begin="0.6s" repeatCount="indefinite"><mpath href="#u4"/></animateMotion></circle>
+        <circle class="flow" r="3.5"><animateMotion dur="0.8s" begin="0.8s" repeatCount="indefinite"><mpath href="#u5"/></animateMotion></circle>
+        <g class="node ext" tabindex="0" data-name="Route" data-info="A list of GPS coordinates for the route to simulate.">
+          <rect x="10" y="68" width="120" height="64" rx="10"/><text x="70" y="96" text-anchor="middle">Route</text><text class="sub" x="70" y="114" text-anchor="middle">GPS points</text>
+        </g>
+        <g class="node ext" tabindex="0" data-name="HERE Maps API" data-info="Returns road attributes for each point: elevation, slope, curvature and speed limits.">
+          <rect x="160" y="68" width="120" height="64" rx="10"/><text x="220" y="96" text-anchor="middle">HERE Maps</text><text class="sub" x="220" y="114" text-anchor="middle">road attributes</text>
+        </g>
+        <g class="node" tabindex="0" data-name="Backend" data-info="Python. Cleans and sorts the road data so every method gets the same input.">
+          <rect x="310" y="68" width="130" height="64" rx="10"/><text x="375" y="96" text-anchor="middle">Backend</text><text class="sub" x="375" y="114" text-anchor="middle">Python · clean, sort</text>
+        </g>
+        <g class="node" tabindex="0" data-name="11 methods" data-info="Interchangeable path-length estimators: Haversine, spherical law of cosines, Vincenty variants, geodesic, and 3D methods that use elevation.">
+          <rect x="470" y="68" width="130" height="64" rx="10"/><text x="535" y="96" text-anchor="middle">11 methods</text><text class="sub" x="535" y="114" text-anchor="middle">interchangeable</text>
+        </g>
+        <g class="node" tabindex="0" data-name="dOC generator" data-info="Writes the deterministic Operating Cycle file the energy simulation loads.">
+          <rect x="630" y="68" width="120" height="64" rx="10"/><text x="690" y="96" text-anchor="middle">dOC generator</text><text class="sub" x="690" y="114" text-anchor="middle">drive cycle file</text>
+        </g>
+        <g class="node ext" tabindex="0" data-name="Simulation" data-info="The vehicle energy and range simulation used in the project.">
+          <rect x="780" y="68" width="110" height="64" rx="10"/><text x="835" y="96" text-anchor="middle">Simulation</text><text class="sub" x="835" y="114" text-anchor="middle">EV range</text>
+        </g>
+      </svg>
+      </div>
+      <div class="diagram-info"><b>tip</b>Hover or tap a box to see what it does and why it's there.</div>
+    </div>
+  </div>
+</section>
+
+<section id="tradeoff">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">The trade-off</p>
+      <h2>Accuracy against speed</h2>
+      <p class="lead">Three of the 11 methods, on the same routes. The test routes included the Stockholm Marathon, a Tour de France climb (Nice → Col de la Couillole), Lund–Malmö and Oslo–Bergen.</p>
+    </div>
+    <div class="tbl-wrap reveal">
+      <table class="tbl">
+        <tr><th>Method</th><th>Error, flat</th><th>Error, hilly</th><th>Time per route</th></tr>
+        <tr class="hi"><td>Vincenty variant (chosen)</td><td>0.008%</td><td>0.10%</td><td>~0.03 s</td></tr>
+        <tr><td>Geodesic with elevation</td><td>–</td><td>0.21%</td><td>0.4 – 1.2 s</td></tr>
+        <tr><td>Haversine</td><td>~0.31%</td><td>~0.63%</td><td>~0.005 s</td></tr>
+      </table>
+    </div>
+    <div class="reveal" style="margin-top:28px">
+      <ul class="role">
+        <li><b>Chose</b>the Vincenty variant for accuracy-critical simulation; Haversine only where real-time speed matters more than precision.</li>
+        <li><b>Tested</b>robustness by adding Gaussian noise (σ = 0.0001°) to the coordinates, to see how each method reacts to bad GPS.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="outcome">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Outcome</p>
+      <h2>Where it landed</h2>
+    </div>
+    <div class="stats reveal" style="margin-bottom:40px">
+      <div class="stat"><div class="num">11</div><div class="label">methods compared on accuracy and speed</div></div>
+      <div class="stat"><div class="num">0.008%</div><div class="label">path-length error on flat routes</div></div>
+      <div class="stat"><div class="num">+25%</div><div class="label">simulation efficiency</div></div>
+      <div class="stat"><div class="num">5</div><div class="label">partners in the consortium</div></div>
+    </div>
+    <ul class="role reveal">
+      <li><b>Built</b>the road-data backend and the dOC generator.</li>
+      <li><b>Shared</b>the findings with the consortium, presented them at the SVEA conference, and co-authored the Chalmers technical report <a href="https://research.chalmers.se/en/publication/541772">"Estimation of Accurate Path Length with Geospatial Data Analysis"</a> (2024).</li>
+    </ul>
+  </div>
+</section>
+
+<section class="contact">
+  <div class="wrap reveal">
+    <a class="btn" href="../index.html#work">← Back to all work</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Yogeswaran Amsavalli</div>
+</footer>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>

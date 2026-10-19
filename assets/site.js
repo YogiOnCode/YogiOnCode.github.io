@@ -75,7 +75,7 @@ var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
     { w: "WPF",    cap: "WPF · MVVM" },
     { w: "TCP/IP", cap: "TCP/IP · Siemens S7 PLC" },
     { w: "APIS",   cap: "REST APIs · third-party integrations" },
-    { w: "PYTHON", cap: "Python · Django · Celery · FastAPI" },
+    { w: "PYTHON", cap: "Python · FastAPI · Celery · pandas" },
     { w: "CLOUD",  cap: "GCP · Cloud Run · BigQuery · Docker" },
     { w: "AI",     cap: "Claude agents with guardrails" }
   ];

@@ -23,6 +23,7 @@
     <div class="nav-links">
       <a href="#context">context</a>
       <a href="#architecture">architecture</a>
+      <a href="#integrations">integrations</a>
       <a href="#decisions">decisions</a>
       <a href="#ai">ai</a>
       <a href="#outcome">outcome</a>
@@ -43,7 +44,7 @@
       <div class="fact"><div class="k">Role</div><div class="v">Software Engineer · OKR owner</div></div>
       <div class="fact"><div class="k">Company</div><div class="v">hello again, Linz</div></div>
       <div class="fact"><div class="k">Timeline</div><div class="v">01/2026 – now</div></div>
-      <div class="fact"><div class="k">Stack</div><div class="v">C# · WPF · Win32 · Python · Vue · GCP · Claude</div></div>
+      <div class="fact"><div class="k">Stack</div><div class="v">C# · WPF · Win32 · Python · REST APIs · Vue · GCP · Claude</div></div>
     </div>
   </div>
 </header>
@@ -192,6 +193,25 @@
           <li>Production AI support agent with guardrails</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="integrations">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Integrations and APIs</p>
+      <h2>Where it meets other systems</h2>
+      <p class="lead">Some of these systems have an API and some have none. Each row is a boundary I built or made safer.</p>
+    </div>
+    <div class="threats reveal">
+      <div class="threat threat-head"><span>Boundary</span><span></span><span>How it's handled</span></div>
+      <div class="threat"><div>Cash register, no API</div><div class="arrow">→</div><div class="def"><b>Read what it already gives off</b><span>Print spooler, files, barcode, screen matching or UI Automation. Diagnostics mode picks the right path for a POS we have never seen.</span></div></div>
+      <div class="threat"><div>Till to backend</div><div class="arrow">→</div><div class="def"><b>A bounded wait, then retried offline</b><span>A short wait, then the offline journal retries with backoff. The API key goes only to our own hosts, and each till's endpoint comes from remote config.</span></div></div>
+      <div class="threat"><div>Receipt API <span class="muted">· Django REST</span></div><div class="arrow">→</div><div class="def"><b>Answer at once, process in the background</b><span>Authenticated, validated intake with an audit record before any processing; retries de-duplicated with a row lock. Admin endpoints add dry runs with zero side effects, replay and search, scoped to one client.</span></div></div>
+      <div class="threat"><div>Third-party workflow platform</div><div class="arrow">→</div><div class="def"><b>Replaced without rewriting configs</b><span>Kept its config format as the contract, so moving a merchant meant a one-click import and a till-by-till switch.</span></div></div>
+      <div class="threat"><div>LLM API</div><div class="arrow">→</div><div class="def"><b>Called only when the rules fall short</b><span>Only for the fields rules missed. Handles differences between model generations, reads PDFs natively, and sends the key in a header so it never lands in a logged URL.</span></div></div>
+      <div class="threat"><div>Service to service</div><div class="arrow">→</div><div class="def"><b>Least privilege, verified identity</b><span>The data warehouse feeds the dashboard through a scheduled export. The dashboard calls the agent through Cloud Run IAM plus a shared secret, and the agent verifies the identity token to record who asked.</span></div></div>
     </div>
   </div>
 </section>

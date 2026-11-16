@@ -37,7 +37,7 @@
     <h1>Dual-line print inspection</h1>
     <p class="tagline" style="font-size:20px;color:var(--muted);max-width:760px;margin:0 0 28px">
       Two apps that check the print on every blister foil, on two pharmaceutical lines at once, in under 100 ms per frame.
-      I designed and built both, installed them on the factory floor and trained the operators.
+      I designed and built both, installed them on the factory floor and trained the technicians, in their own language.
     </p>
     <div class="facts">
       <div class="fact"><div class="k">Role</div><div class="v">Software engineer · field application engineer</div></div>
@@ -50,8 +50,8 @@
 
 <section style="padding-top:0">
   <div class="wrap reveal">
-    <div class="shot"><img src="../assets/industrial/foil-hmi-defect.webp" alt="The HMI marking a defect on a blister foil"></div>
-    <p class="caption">The operator HMI flags a defect on the foil. Camera feed redacted · client details removed.</p>
+    <div class="shot"><img src="../assets/industrial/foil-v2-inspection.webp" alt="The v2 HMI, in Hungarian, flagging a defect on a blister foil"></div>
+    <p class="caption">The v2 operator HMI, in Hungarian, flags a defect on the foil. Camera feed redacted · client details removed.</p>
   </div>
 </section>
 
@@ -72,7 +72,8 @@
         <tr><td>Two lines</td><td>Both lines on one I/O card, without interfering</td></tr>
         <tr><td>Set-up</td><td>The HMI finds the Sender and connects with no configuration</td></tr>
         <tr><td>No lost data</td><td>A defect image is never lost or left orphaned</td></tr>
-        <tr><td>Compliance</td><td>Login, role-based access and an audit trail of every action</td></tr>
+        <tr><td>Language</td><td>Screens in Hungarian, the technicians' own language, next to English</td></tr>
+        <tr><td>Compliance</td><td>Login, access by Active Directory group and an audit trail of every action</td></tr>
       </table></div>
     </div>
   </div>
@@ -164,8 +165,16 @@
         <h3><span class="n">ADR-04</span>Security as part of v2, not an add-on</h3>
         <dl class="adr-grid">
           <dt>Context</dt><dd>Pharmaceutical compliance requires knowing who changed what, and when.</dd>
-          <dt>Decision</dt><dd>Rebuilt the HMI in WPF with a login, role-based access for operator, engineer and admin, and an audit trail of every action.</dd>
+          <dt>Decision</dt><dd>Rebuilt the HMI in WPF with a login. Active Directory groups decide what an operator, an engineer and an admin can control, and every action goes to an audit trail. I wrote the first drafts of the validation documents for its first validation check.</dd>
           <dt>Trade-off</dt><dd>One more step for operators at the start of a shift; every change is now traceable.</dd>
+        </dl>
+      </div>
+      <div class="adr-item reveal">
+        <h3><span class="n">ADR-05</span>The technicians' language and feedback first</h3>
+        <dl class="adr-grid">
+          <dt>Context</dt><dd>The people running the line work in Hungarian, and they know the line better than I do.</dd>
+          <dt>Decision</dt><dd>Shipped the HMI in Hungarian next to English, trained the technicians on site, collected their feedback during production and changed the screens to match.</dd>
+          <dt>Trade-off</dt><dd>Every new screen needs two languages and another round on the floor; the technicians read every message without a translation.</dd>
         </dl>
       </div>
     </div>
@@ -180,10 +189,11 @@
       <p class="lead">Camera feeds are blurred and client details removed on purpose.</p>
     </div>
     <div class="gallery reveal">
+      <figure><div class="shot"><img src="../assets/industrial/foil-v2-login.webp" alt="v2 login screen in Hungarian" loading="lazy"></div><figcaption class="caption">v2: login in Hungarian. Active Directory groups decide what each role can control.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-v2-home-hu.webp" alt="v2 home screen in Hungarian with a session timer and a log-out button" loading="lazy"></div><figcaption class="caption">v2 after login: the session expires on a timer and the technician logs out when done.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-v2-inspection.webp" alt="v2 inspection screen in Hungarian flagging a defect" loading="lazy"></div><figcaption class="caption">v2 live inspection: passed and defect counts, and an alert asking the technician to check the defect images.</figcaption></figure>
       <figure><div class="shot"><img src="../assets/industrial/foil-sender.webp" alt="Sender app with raw, processed and subtraction views" loading="lazy"></div><figcaption class="caption">The Sender: raw frame, processed frame and the difference used to spot defects.</figcaption></figure>
-      <figure><div class="shot"><img src="../assets/industrial/foil-hmi-production-hu.webp" alt="HMI during live production, Hungarian interface" loading="lazy"></div><figcaption class="caption">Live production in Hungarian, with passed and flagged counts per line.</figcaption></figure>
-      <figure><div class="shot"><img src="../assets/industrial/foil-v2-login.webp" alt="v2 login screen" loading="lazy"></div><figcaption class="caption">v2: login and role-based access.</figcaption></figure>
-      <figure><div class="shot"><img src="../assets/industrial/foil-v2-inspection.webp" alt="v2 WPF inspection screen" loading="lazy"></div><figcaption class="caption">v2: the inspection screen rebuilt in WPF.</figcaption></figure>
+      <figure><div class="shot"><img src="../assets/industrial/foil-hmi-production-hu.webp" alt="v1 HMI during live production, Hungarian interface" loading="lazy"></div><figcaption class="caption">v1 in live production, with passed and flagged counts per line.</figcaption></figure>
     </div>
   </div>
 </section>
@@ -198,11 +208,11 @@
       <div class="stat"><div class="num">&lt;100 ms</div><div class="label">capture, process and send per frame</div></div>
       <div class="stat"><div class="num">2</div><div class="label">lines running on one I/O card</div></div>
       <div class="stat"><div class="num">~496k</div><div class="label">blisters counted in two production screens alone</div></div>
-      <div class="stat"><div class="num">3</div><div class="label">roles with an audit trail in v2</div></div>
+      <div class="stat"><div class="num">3</div><div class="label">roles by Active Directory group, with an audit trail in v2</div></div>
     </div>
     <ul class="role reveal">
       <li><b>Designed</b>both apps from scratch: the Sender, the HMI and the TCP/IP protocol between them.</li>
-      <li><b>Led</b>the work from requirements to rollout: installed it on the production floor, tuned the set-ups and trained the operators.</li>
+      <li><b>Led</b>the work from requirements to rollout: installed it on the production floor, tuned the set-ups, trained the technicians and reworked the HMI from their feedback.</li>
       <li><b>Learned</b>that great engineering isn't complete until the people using it trust it.</li>
     </ul>
   </div>

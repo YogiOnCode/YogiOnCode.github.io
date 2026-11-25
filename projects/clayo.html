@@ -22,6 +22,7 @@
     <a class="logo" href="../index.html">yogi<span>@</span>dev<span>:~/projects/clayo$</span></a>
     <div class="nav-links">
       <a href="#problem">problem</a>
+      <a href="#pages">pages</a>
       <a href="#architecture">architecture</a>
       <a href="#decisions">decisions</a>
       <a href="#security">security</a>
@@ -36,7 +37,7 @@
     <a class="crumb" href="../index.html#work">← cd ..</a>
     <h1><img src="../assets/clayo/icon.png" alt="">Clayo</h1>
     <p class="tagline" style="font-size:20px;color:var(--muted);max-width:720px;margin:0 0 28px">
-      Every Claude Code and Codex session in one Windows window, plus an island that tells you which one needs you.
+      Every Claude Code and Codex session in one Windows window, an island that tells you which one needs you, and pages your agents make that you can share.
     </p>
     <div class="btns">
       <a class="btn primary" href="https://github.com/YogiOnCode/Clayo">View on GitHub</a>
@@ -44,9 +45,9 @@
     </div>
     <div class="facts">
       <div class="fact"><div class="k">Role</div><div class="v">Solo: design, build, ship</div></div>
-      <div class="fact"><div class="k">Timeline</div><div class="v">Sep – Oct 2026</div></div>
+      <div class="fact"><div class="k">Timeline</div><div class="v">Sep 2026 – now</div></div>
       <div class="fact"><div class="k">Stack</div><div class="v">.NET 10 · WPF · ConPTY · WebView2</div></div>
-      <div class="fact"><div class="k">Status</div><div class="v">v1.0.3 · MIT · public</div></div>
+      <div class="fact"><div class="k">Status</div><div class="v">v1.2.0 · MIT · public</div></div>
     </div>
   </div>
 </header>
@@ -70,6 +71,22 @@
     <div class="reveal">
       <div class="shot"><img src="../assets/clayo/island.gif" alt="The island drops from the top of the screen when a session needs you, then turns green when one finishes" loading="lazy"></div>
       <p class="caption">The island: it drops in when a session needs you and never takes keyboard focus.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pages">
+  <div class="wrap two">
+    <div class="reveal">
+      <p class="eyebrow">Since launch</p>
+      <h2>Pages: what a session can show you</h2>
+      <p>A terminal is a poor place to read a report. Type <code>/page</code> and the session turns the conversation into a report, dashboard, diagram or slide deck, shown beside the terminal in a sealed web view.</p>
+      <p>A page can be presented full screen, exported as PDF or PNG, saved as one file that opens offline, or shared as a public link that can be updated or removed.</p>
+      <p><b>Before a page leaves the machine</b> Clayo checks it for keys, tokens and local paths. Sharing signs in once to a GitHub App that can reach gists and nothing else.</p>
+    </div>
+    <div class="reveal">
+      <div class="shot"><img src="../assets/clayo/pages.gif" alt="Typing /page makes a dashboard beside the terminal, then Present and Share create a public link" loading="lazy"></div>
+      <p class="caption">/page makes a dashboard beside the terminal, then Present and Share.</p>
     </div>
   </div>
 </section>
@@ -227,11 +244,15 @@
   <div class="wrap story">
     <div class="reveal">
       <p class="eyebrow">Build log</p>
-      <h2>From scaffold to launch</h2>
-      <p class="muted">The real history, condensed from 40 commits and 15 pull requests.</p>
+      <h2>From scaffold to v1.2</h2>
+      <p class="muted">The real history, condensed from 73 commits and 50 merged pull requests.</p>
     </div>
     <ol class="gitlog reveal">
-      <li class="commit head"><div class="commit-meta"><span>Oct 7</span></div><h3>Send a screenshot to any session from the island</h3></li>
+      <li class="commit head"><div class="commit-meta"><span>Nov 20</span><span class="tag">v1.2.0</span></div><h3>Public page links sign in once to a GitHub App that reaches gists only</h3></li>
+      <li class="commit"><div class="commit-meta"><span>Nov 18</span><span class="tag">v1.1.0</span></div><h3>Pages: /page, the Pages view, present, export and share</h3></li>
+      <li class="commit"><div class="commit-meta"><span>Nov 11</span></div><h3>The island glows blue while a permission prompt waits</h3></li>
+      <li class="commit"><div class="commit-meta"><span>Oct 20</span></div><h3>CI runs the build and every check on each pull request</h3></li>
+      <li class="commit"><div class="commit-meta"><span>Oct 7</span></div><h3>Send a screenshot to any session from the island</h3></li>
       <li class="commit"><div class="commit-meta"><span>Oct 5</span><span class="tag">v1.0.2</span></div><h3>Security, stability and leak fixes before public launch</h3></li>
       <li class="commit"><div class="commit-meta"><span>Oct 4</span><span class="tag">v1.0.1</span></div><h3>Self-update from inside the app, one-line install</h3></li>
       <li class="commit"><div class="commit-meta"><span class="hash">fd1ff33</span><span>Oct 3</span><span class="tag">v1.0.0</span></div><h3>Setup screen, limits in the sidebar, codebase grouped by feature</h3></li>
@@ -246,8 +267,8 @@
   <div class="wrap">
     <div class="reveal">
       <p class="eyebrow">Security</p>
-      <h2>The pre-launch audit</h2>
-      <p class="lead">Before posting it publicly, I audited Clayo for security and memory issues and fixed them in one release.</p>
+      <h2>The pre-launch audit, and what came after</h2>
+      <p class="lead">Before posting it publicly, I audited Clayo for security and memory issues and fixed them in one release. The last two rows came with later features.</p>
     </div>
     <div class="threats reveal">
       <div class="threat threat-head"><span>Risk</span><span></span><span>Fix</span></div>
@@ -256,6 +277,8 @@
       <div class="threat"><div>Untrusted IDs, paths and git config</div><div class="arrow">→</div><div class="def"><b>Quoted everywhere; risky git hooks off</b><span>A repo can't make Clayo run its code just by being opened.</span></div></div>
       <div class="threat"><div>Crash or leak when a pane fails</div><div class="arrow">→</div><div class="def"><b>Isolated panes, handles released</b><span>A failing pane can't take the app down or leave a shell behind.</span></div></div>
       <div class="threat"><div>Unbounded files on disk</div><div class="arrow">→</div><div class="def"><b>Pruned and rotated</b><span>Status files older than 7 days are removed; the crash log rotates at 1 MB.</span></div></div>
+      <div class="threat"><div>An agent pushes or releases on its own</div><div class="arrow">→</div><div class="def"><b>Ask before publishing</b><span>Sessions stop and ask before a push, tag, release or merge, set per action.</span></div></div>
+      <div class="threat"><div>A shared page leaks a secret</div><div class="arrow">→</div><div class="def"><b>Checked before it leaves the machine</b><span>Pages are scanned for keys, tokens and local paths; the sharing app can reach gists only.</span></div></div>
     </div>
   </div>
 </section>
@@ -268,9 +291,9 @@
     </div>
     <div class="stats reveal" style="margin-bottom:40px">
       <div class="stat"><div class="num">32 days</div><div class="label">first commit to v1.0</div></div>
-      <div class="stat"><div class="num">4</div><div class="label">public releases</div></div>
-      <div class="stat"><div class="num">16</div><div class="label">automated self-checks</div></div>
-      <div class="stat"><div class="num">~10k</div><div class="label">lines of C# and XAML</div></div>
+      <div class="stat"><div class="num">9</div><div class="label">releases, latest v1.2.0</div></div>
+      <div class="stat"><div class="num">22</div><div class="label">check suites, run on every pull request</div></div>
+      <div class="stat"><div class="num">~18k</div><div class="label">lines of C# and XAML</div></div>
     </div>
     <div class="reveal">
       <h3 style="margin-bottom:10px">What I'd do next</h3>
